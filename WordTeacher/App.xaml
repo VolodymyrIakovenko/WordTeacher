@@ -1,8 +1,11 @@
 ﻿<Application x:Class="WordTeacher.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+             xmlns:viewModels="clr-namespace:WordTeacher.ViewModels"
+             xmlns:converters="clr-namespace:WordTeacher.Converters"
+             StartupUri="VIews/MainWindow.xaml">
     <Application.Resources>
-         
+        <viewModels:MainViewModel x:Key="MainViewModel" />
+        <converters:ValueToCenterPositionConverter x:Key="CenterPositionConverter"/>
     </Application.Resources>
 </Application>
