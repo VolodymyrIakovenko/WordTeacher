@@ -7,11 +7,73 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         DataContext="{StaticResource MainViewModel}"
-        Top="{Binding PositionY}">
+        Top="{Binding PositionY}"
+        AllowsTransparency="True"
+        Background="Transparent">
     <Window.Left>
         <MultiBinding Converter="{StaticResource CenterPositionConverter}">
             <Binding Path="PositionX"/>
             <Binding RelativeSource="{RelativeSource Self}" Path="Width"/>
         </MultiBinding>
     </Window.Left>
+    
+    <Border BorderBrush="DarkSlateBlue" BorderThickness="1" CornerRadius="0,0,5,5" Background="AliceBlue">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.2*"/>
+            </Grid.ColumnDefinitions>
+        
+            <!--Words-->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="0.5*"/>
+                </Grid.RowDefinitions>
+        
+                <!--Original word-->
+                <Viewbox Grid.Row="0" HorizontalAlignment="Left">
+                    <Label Content="Word" FontSize="22" Padding="5,1"/>
+                </Viewbox>
+            
+                <!--Translation-->
+                <Viewbox Grid.Row="1" HorizontalAlignment="Left">
+                    <Label Content="Translation" Padding="5,1"/>
+                </Viewbox>
+            </Grid>
+         
+            <!--Configuration button-->
+            <Button Grid.Column="1" x:Name="ConfigurationButton" Background="AliceBlue">
+                <!--<Button.Style>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="CadetBlue" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>-->
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.2*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.2*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="0.2*"/>
+                            </Grid.RowDefinitions>
+                            <Image Grid.Column="1" Grid.Row="1" Source="../Images/configuration.png"/>
+                        </Grid>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+        </Grid>
+    </Border>
 </Window>
