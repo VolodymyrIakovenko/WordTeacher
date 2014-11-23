@@ -1,0 +1,1 @@
+The application helps to learn new words of the specific language by showing them on top of the screen.
