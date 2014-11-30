@@ -9,7 +9,8 @@
         DataContext="{StaticResource MainViewModel}"
         Top="{Binding PositionY}"
         AllowsTransparency="True"
-        Background="Transparent">
+        Background="Transparent"
+        Topmost="True">
     <Window.Left>
         <MultiBinding Converter="{StaticResource CenterPositionConverter}">
             <Binding Path="PositionX"/>
@@ -17,6 +18,7 @@
         </MultiBinding>
     </Window.Left>
     
+    <!--Container-->
     <Border BorderBrush="DarkSlateBlue" BorderThickness="1" CornerRadius="0,0,5,5" Background="AliceBlue">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -44,8 +46,39 @@
          
             <!--Configuration button-->
             <Button Grid.Column="1" x:Name="ConfigurationButton" Background="AliceBlue">
-                <!--<Button.Style>
-                    <Style TargetType="Button">
+               
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        
+                        <!--Open context menu-->
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="MouseRightButtonUp">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="ContextMenu.IsOpen">
+                                                <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="True"/>
+                                            </BooleanAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </Style.Triggers>
+                        
+                        <!--Context Menu-->
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu ItemsSource="{Binding ContextActions}">
+                                    <ContextMenu.ItemTemplate >
+                                        <DataTemplate DataType="MenuItem">
+                                            <MenuItem Header="{Binding Name}" Command="{Binding Command}"/>
+                                        </DataTemplate>
+                                    </ContextMenu.ItemTemplate>
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <!--<Style TargetType="Button">
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="CadetBlue" />
@@ -54,8 +87,10 @@
                                 <Setter Property="Background" Value="White" />
                             </Trigger>
                         </Style.Triggers>
-                    </Style>
-                </Button.Style>-->
+                    </Style>-->
+                </Button.Style>
+                
+                <!--View of the button-->
                 <Button.ContentTemplate>
                     <DataTemplate>
                         <Grid>
@@ -73,6 +108,7 @@
                         </Grid>
                     </DataTemplate>
                 </Button.ContentTemplate>
+                
             </Button>
         </Grid>
     </Border>

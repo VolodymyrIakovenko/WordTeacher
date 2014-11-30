@@ -1,11 +1,19 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using WordTeacher.Models;
 using WordTeacher.Utilities;
 
 namespace WordTeacher.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private double _positionX = 0.0;
+        private double _positionX;
+        private double _positionY;
+        private ObservableCollection<ContextAction> _contextActions = new ObservableCollection<ContextAction>();
+
+        /// <summary>
+        /// Position of the window on the X axis.
+        /// </summary>
         public double PositionX
         {
             get { return _positionX; }
@@ -16,7 +24,9 @@ namespace WordTeacher.ViewModels
             }
         }
 
-        private double _positionY = 0.0;
+        /// <summary>
+        /// Position of the window on the Y axis.
+        /// </summary>
         public double PositionY
         {
             get { return _positionY; }
@@ -27,12 +37,47 @@ namespace WordTeacher.ViewModels
             }
         }
 
+        /// <summary>
+        /// List of the context menu items.
+        /// </summary>
+        public ObservableCollection<ContextAction> ContextActions
+        {
+            get { return _contextActions; }
+            set
+            {
+                _contextActions = value;
+                OnPropertyChanged("ContextActions");
+            }
+        }
+
         public MainViewModel()
         {
-            // Assign position to the window.
+            ArrangeWindowPosition();
+            CreateContextItems();
+        }
+
+        /// <summary>
+        /// Assign position to the window.
+        /// </summary>
+        private void ArrangeWindowPosition()
+        {
             var topCenterPoint = ScreenUtility.GetTopCenterPoint();
             PositionX = topCenterPoint.X;
             PositionY = topCenterPoint.Y;
+        }
+
+        /// <summary>
+        /// Add context menu items.
+        /// </summary>
+        private void CreateContextItems()
+        {
+            ContextActions = new ObservableCollection<ContextAction>
+            {
+                new ContextAction("Settings", null),
+                new ContextAction("Exit", null)
+            };
+
+            OnPropertyChanged("ContextActions");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

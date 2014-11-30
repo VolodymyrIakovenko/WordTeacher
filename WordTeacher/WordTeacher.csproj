@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Converters\ValueToCenterPositionConverter.cs" />
     <Compile Include="Utilities\ScreenUtility.cs" />
+    <Compile Include="Models\ContextAction.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="VIews\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
