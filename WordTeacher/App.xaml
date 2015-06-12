@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewModels="clr-namespace:WordTeacher.ViewModels"
              xmlns:converters="clr-namespace:WordTeacher.Converters"
-             StartupUri="VIews/MainWindow.xaml">
+             StartupUri="VIews/MainView.xaml">
     <Application.Resources>
         <viewModels:MainViewModel x:Key="MainViewModel" />
         <converters:ValueToCenterPositionConverter x:Key="CenterPositionConverter"/>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </Application.Resources>
 </Application>

@@ -1,0 +1,59 @@
+﻿<Window x:Class="WordTeacher.VIews.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" 
+        Height="50" 
+        Width="300"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        DataContext="{StaticResource MainViewModel}"
+        Top="{Binding PositionY}"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True">
+    <Window.Left>
+        <MultiBinding Converter="{StaticResource CenterPositionConverter}">
+            <Binding Path="PositionX"/>
+            <Binding RelativeSource="{RelativeSource Self}" Path="Width"/>
+        </MultiBinding>
+    </Window.Left>
+    
+    <!--Container-->
+    <Border BorderBrush="DarkSlateBlue" BorderThickness="1" CornerRadius="0,0,5,5" Background="AliceBlue">
+        
+        <!--Context menu-->
+        <Border.ContextMenu>
+            <ContextMenu >
+                <ContextMenu.ItemTemplate >
+                    <DataTemplate DataType="MenuItem">
+                        <MenuItem Header="{Binding Name}" Command="{Binding Command}"/>
+                    </DataTemplate>
+                </ContextMenu.ItemTemplate>
+                
+                <MenuItem Header="Settings" Command="{Binding SettingsCommand}" 
+                          IsEnabled="{Binding IsSettingsOpened, Converter={StaticResource InverseBooleanConverter}}"/>
+                <MenuItem Header="Exit" Command="{Binding CloseCommand}"/>
+            </ContextMenu>
+        </Border.ContextMenu>
+
+
+        <!--Words-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.5*"/>
+            </Grid.RowDefinitions>
+        
+            <!--Original word-->
+            <Viewbox Grid.Row="0" HorizontalAlignment="Left">
+                <Label Content="Word" FontSize="22" Padding="5,1"/>
+            </Viewbox>
+            
+            <!--Translation-->
+            <Viewbox Grid.Row="1" HorizontalAlignment="Left">
+                <Label Content="Translation" Padding="5,1"/>
+            </Viewbox>
+            
+        </Grid>
+    </Border>
+</Window>
