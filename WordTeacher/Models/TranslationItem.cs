@@ -16,5 +16,10 @@
         public string Word { get; set; }
 
         public string Translation { get; set; }
+
+        public override string ToString()
+        {
+            return Word + ": " + Translation;
+        }
     }
 }

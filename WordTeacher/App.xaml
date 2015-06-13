@@ -6,6 +6,8 @@
              StartupUri="VIews/MainView.xaml">
     <Application.Resources>
         <viewModels:MainViewModel x:Key="MainViewModel" />
+        <viewModels:SettingsViewModel x:Key="SettingsViewModel" />
+        
         <converters:ValueToCenterPositionConverter x:Key="CenterPositionConverter"/>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </Application.Resources>

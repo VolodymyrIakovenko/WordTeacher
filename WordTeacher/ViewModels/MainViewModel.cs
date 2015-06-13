@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -19,6 +18,7 @@ namespace WordTeacher.ViewModels
         private bool _isSettingsOpened;
         private ICommand _closeCommand;
         private ICommand _settingsCommand;
+        private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>(); 
 
         public MainViewModel()
         {
@@ -66,6 +66,19 @@ namespace WordTeacher.ViewModels
             }
         }
 
+        /// <summary>
+        /// The list of words and their translations.
+        /// </summary>
+        public ObservableCollection<TranslationItem> TranslationItems
+        {
+            get { return _translationItems; }
+            set
+            {
+                _translationItems = value;
+                OnPropertyChanged("TranslationItems");
+            }
+        }
+
         public ICommand SettingsCommand
         {
             get
@@ -81,8 +94,6 @@ namespace WordTeacher.ViewModels
                 return _closeCommand ?? (_closeCommand = new CommandHandler(CloseApplication, true));
             }
         }
-
-        public ObservableCollection<TranslationItem> TranslationItems = new ObservableCollection<TranslationItem>();
 
         protected void OnPropertyChanged(string name)
         {
@@ -105,9 +116,6 @@ namespace WordTeacher.ViewModels
         {
             var settingsView = new SettingsView();
 
-            var settingsViewModel = new SettingsViewModel(TranslationItems);
-
-            settingsView.DataContext = settingsViewModel;
             settingsView.Closed += SettingsViewOnClosed;
             settingsView.Show();
 
@@ -119,8 +127,13 @@ namespace WordTeacher.ViewModels
             var settingsView = sender as SettingsView;
             if (settingsView != null)
             {
+                // Copy items from settings.
                 var settingsViewModel = (SettingsViewModel)settingsView.DataContext;
-                TranslationItems = settingsViewModel.TranslationItems;
+                TranslationItems.Clear();
+                foreach (var translationItem in settingsViewModel.SavedTranslationItems)
+                {
+                    TranslationItems.Add(new TranslationItem(translationItem.Word, translationItem.Translation));                    
+                }
             }
 
             IsSettingsOpened = false;

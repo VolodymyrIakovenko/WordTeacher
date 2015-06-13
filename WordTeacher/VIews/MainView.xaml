@@ -36,7 +36,6 @@
             </ContextMenu>
         </Border.ContextMenu>
 
-
         <!--Words-->
         <Grid>
             <Grid.RowDefinitions>
@@ -46,14 +45,13 @@
         
             <!--Original word-->
             <Viewbox Grid.Row="0" HorizontalAlignment="Left">
-                <Label Content="Word" FontSize="22" Padding="5,1"/>
+                <Label Content="{Binding TranslationItems[0].Word}" FontSize="22" Padding="5,1"/>
             </Viewbox>
             
             <!--Translation-->
             <Viewbox Grid.Row="1" HorizontalAlignment="Left">
-                <Label Content="Translation" Padding="5,1"/>
+                <Label Content="{Binding TranslationItems[0].Translation}" Padding="5,1"/>
             </Viewbox>
-            
         </Grid>
     </Border>
 </Window>
