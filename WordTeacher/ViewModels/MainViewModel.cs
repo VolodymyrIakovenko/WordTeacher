@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 
 using WordTeacher.Commands;
+using WordTeacher.Models;
 using WordTeacher.Utilities;
 using WordTeacher.Views;
 
@@ -79,6 +82,8 @@ namespace WordTeacher.ViewModels
             }
         }
 
+        public ObservableCollection<TranslationItem> TranslationItems = new ObservableCollection<TranslationItem>();
+
         protected void OnPropertyChanged(string name)
         {
             var handler = PropertyChanged;
@@ -99,6 +104,10 @@ namespace WordTeacher.ViewModels
         private void OpenSettings()
         {
             var settingsView = new SettingsView();
+
+            var settingsViewModel = new SettingsViewModel(TranslationItems);
+
+            settingsView.DataContext = settingsViewModel;
             settingsView.Closed += SettingsViewOnClosed;
             settingsView.Show();
 
@@ -107,6 +116,13 @@ namespace WordTeacher.ViewModels
 
         private void SettingsViewOnClosed(object sender, EventArgs eventArgs)
         {
+            var settingsView = sender as SettingsView;
+            if (settingsView != null)
+            {
+                var settingsViewModel = (SettingsViewModel)settingsView.DataContext;
+                TranslationItems = settingsViewModel.TranslationItems;
+            }
+
             IsSettingsOpened = false;
         }
 

@@ -5,7 +5,25 @@
         Height="400"
         Width="500"
         WindowStartupLocation="CenterScreen">
-    <Grid>
-        
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--Word Table-->
+        <DataGrid Grid.Row="0" 
+                  CanUserAddRows="True" 
+                  CanUserDeleteRows="True" 
+                  IsTabStop="True" 
+                  IsReadOnly="False"
+                  ItemsSource="{Binding TranslationItems}"  
+                  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Word" Width="0.25*" Binding="{Binding Word}" IsReadOnly="False"/>
+                <DataGridTextColumn Header="Translation" Width="0.75*" Binding="{Binding Translation}" IsReadOnly="False"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
