@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -11,7 +12,7 @@ using WordTeacher.Views;
 
 namespace WordTeacher.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged, ITranslationsLoadable
     {
         private double _positionX;
         private double _positionY;
@@ -93,6 +94,11 @@ namespace WordTeacher.ViewModels
             {
                 return _closeCommand ?? (_closeCommand = new CommandHandler(CloseApplication, true));
             }
+        }
+
+        public void ReloadSettings(IList<TranslationItem> translationItems)
+        {
+            TranslationItems = new ObservableCollection<TranslationItem>(translationItems);
         }
 
         protected void OnPropertyChanged(string name)

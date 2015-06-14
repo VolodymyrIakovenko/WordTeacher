@@ -6,10 +6,11 @@ using System.Windows;
 using System.Windows.Input;
 using WordTeacher.Commands;
 using WordTeacher.Models;
+using WordTeacher.Utilities;
 
 namespace WordTeacher.ViewModels
 {
-    public class SettingsViewModel: INotifyPropertyChanged, ICloseable
+    public class SettingsViewModel: INotifyPropertyChanged, ICloseable, ITranslationsLoadable
     {
         private bool _areUnsavedChanges;
         private ICommand _saveCommand;
@@ -57,6 +58,21 @@ namespace WordTeacher.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<EventArgs> RequestClose;
 
+        public bool ExitSettings()
+        {
+            if (AreUnsavedChanges && ShowExitDialog() != MessageBoxResult.Yes)
+                return false;
+
+            TranslationItems = new ObservableCollection<TranslationItem>(SavedTranslationItems);
+            return true;
+        }
+
+        public void ReloadSettings(IList<TranslationItem> translationItems)
+        {
+            TranslationItems = new ObservableCollection<TranslationItem>(translationItems);
+            SaveLocalSettings();
+        }
+
         protected void OnPropertyChanged(string name)
         {
             var handler = PropertyChanged;
@@ -65,6 +81,12 @@ namespace WordTeacher.ViewModels
         }
 
         private void SaveSettings()
+        {
+            SettingsUtility.Save(new List<TranslationItem>(TranslationItems));
+            SaveLocalSettings();
+        }
+
+        private void SaveLocalSettings()
         {
             SavedTranslationItems = new List<TranslationItem>(TranslationItems);
             AreUnsavedChanges = false;
@@ -78,15 +100,6 @@ namespace WordTeacher.ViewModels
             var handler = RequestClose;
             if (handler != null)
                 handler.Invoke(this, new EventArgs());
-        }
-
-        public bool ExitSettings()
-        {
-            if (AreUnsavedChanges && ShowExitDialog() != MessageBoxResult.Yes)
-                return false;
-            
-            TranslationItems = new ObservableCollection<TranslationItem>(SavedTranslationItems);
-            return true;
         }
 
         private MessageBoxResult ShowExitDialog()
