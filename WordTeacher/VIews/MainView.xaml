@@ -10,7 +10,8 @@
         Top="{Binding PositionY}"
         AllowsTransparency="True"
         Background="Transparent"
-        Topmost="True">
+        Topmost="True"
+        ShowInTaskbar="False">
     <Window.Left>
         <MultiBinding Converter="{StaticResource CenterPositionConverter}">
             <Binding Path="PositionX"/>
