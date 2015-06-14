@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using WordTeacher.ViewModels;
 
 namespace WordTeacher.VIews
 {
@@ -10,6 +12,13 @@ namespace WordTeacher.VIews
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void TimelineOnCompleted(object sender, EventArgs e)
+        {
+            var mainViewModel = DataContext as MainViewModel;
+            if (mainViewModel != null)
+                mainViewModel.IsHidden = !mainViewModel.IsHidden;
         }
     }
 }

@@ -18,6 +18,7 @@ namespace WordTeacher.ViewModels
         private double _positionX;
         private double _positionY;
         private bool _isSettingsOpened;
+        private bool _isHidden;
         private int _translationItemIndex;
 
         private ICommand _nextItemCommand;
@@ -70,6 +71,25 @@ namespace WordTeacher.ViewModels
                 _isSettingsOpened = value;
                 OnPropertyChanged("IsSettingsOpened");
             }
+        }
+
+        /// <summary>
+        /// Is window hidden.
+        /// </summary>
+        public bool IsHidden
+        {
+            get { return _isHidden; }
+            set
+            {
+                _isHidden = value;
+                OnPropertyChanged("IsHidden");
+                OnPropertyChanged("CollapseImage");
+            }
+        }
+
+        public string CollapseImage
+        {
+            get { return IsHidden ? "../Resources/expand_arrow.png" : "../Resources/collapse_arrow.png"; }
         }
 
         /// <summary>

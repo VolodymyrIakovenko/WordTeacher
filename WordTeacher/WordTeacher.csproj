@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\HiddenTopConverter.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Models\TranslationItem.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -127,6 +128,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="book.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\collapse_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\expand_arrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
