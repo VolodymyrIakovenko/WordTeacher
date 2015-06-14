@@ -35,23 +35,53 @@
                 <MenuItem Header="Exit" Command="{Binding CloseCommand}"/>
             </ContextMenu>
         </Border.ContextMenu>
-
-        <!--Words-->
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="0.5*"/>
-            </Grid.RowDefinitions>
         
-            <!--Original word-->
-            <Viewbox Grid.Row="0" HorizontalAlignment="Left">
-                <Label Content="{Binding TranslationItems[0].Word}" FontSize="22" Padding="5,1"/>
-            </Viewbox>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.2*"/>
+            </Grid.ColumnDefinitions>
             
-            <!--Translation-->
-            <Viewbox Grid.Row="1" HorizontalAlignment="Left">
-                <Label Content="{Binding TranslationItems[0].Translation}" Padding="5,1"/>
-            </Viewbox>
+            <!--Words-->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="0.5*"/>
+                </Grid.RowDefinitions>
+        
+                <!--Original word-->
+                <Viewbox Grid.Row="0" HorizontalAlignment="Left">
+                    <Label Content="{Binding CurrentTranslationItem.Word}" FontSize="22" Padding="5,1"/>
+                </Viewbox>
+            
+                <!--Translation-->
+                <Viewbox Grid.Row="1" HorizontalAlignment="Left">
+                    <Label Content="{Binding CurrentTranslationItem.Translation}" Padding="5,1"/>
+                </Viewbox>
+            </Grid>
+            
+            <!--Next Word-->
+            <Button Grid.Column="1" Margin="5" Command="{Binding NextItemCommand}">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Image>
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Setter Property="Source" Value="../Resources/arrow.png"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Source" Value="../Resources/hovered_arrow.png"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Grid>
     </Border>
 </Window>

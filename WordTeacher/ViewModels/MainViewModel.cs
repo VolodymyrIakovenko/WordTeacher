@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 
 using WordTeacher.Commands;
+using WordTeacher.Extensions;
 using WordTeacher.Models;
 using WordTeacher.Utilities;
 using WordTeacher.Views;
@@ -17,8 +18,12 @@ namespace WordTeacher.ViewModels
         private double _positionX;
         private double _positionY;
         private bool _isSettingsOpened;
+        private int _translationItemIndex;
+
+        private ICommand _nextItemCommand;
         private ICommand _closeCommand;
         private ICommand _settingsCommand;
+
         private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>(); 
 
         public MainViewModel()
@@ -68,6 +73,14 @@ namespace WordTeacher.ViewModels
         }
 
         /// <summary>
+        /// Current shown word and its tranlsation.
+        /// </summary>
+        public TranslationItem CurrentTranslationItem
+        {
+            get { return TranslationItems[_translationItemIndex]; }
+        }
+
+        /// <summary>
         /// The list of words and their translations.
         /// </summary>
         public ObservableCollection<TranslationItem> TranslationItems
@@ -77,6 +90,15 @@ namespace WordTeacher.ViewModels
             {
                 _translationItems = value;
                 OnPropertyChanged("TranslationItems");
+                OnPropertyChanged("CurrentTranslationItem");
+            }
+        }
+
+        public ICommand NextItemCommand
+        {
+            get
+            {
+                return _nextItemCommand ?? (_nextItemCommand = new CommandHandler(NextItem, true));
             }
         }
 
@@ -118,6 +140,14 @@ namespace WordTeacher.ViewModels
             PositionY = topCenterPoint.Y;
         }
 
+        private void NextItem()
+        {
+            _translationItemIndex++;
+            if (_translationItemIndex >= TranslationItems.Count)
+                _translationItemIndex = 0;
+            OnPropertyChanged("CurrentTranslationItem");
+        }
+
         private void OpenSettings()
         {
             var settingsView = new SettingsView();
@@ -135,11 +165,7 @@ namespace WordTeacher.ViewModels
             {
                 // Copy items from settings.
                 var settingsViewModel = (SettingsViewModel)settingsView.DataContext;
-                TranslationItems.Clear();
-                foreach (var translationItem in settingsViewModel.SavedTranslationItems)
-                {
-                    TranslationItems.Add(new TranslationItem(translationItem.Word, translationItem.Translation));                    
-                }
+                TranslationItems = new ObservableCollection<TranslationItem>(settingsViewModel.SavedTranslationItems.Clone());                    
             }
 
             IsSettingsOpened = false;

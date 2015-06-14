@@ -1,6 +1,8 @@
-﻿namespace WordTeacher.Models
+﻿using System;
+
+namespace WordTeacher.Models
 {
-    public class TranslationItem
+    public class TranslationItem: ICloneable
     {
         /// <summary>
         /// Without empty constructor datagrid can't be editable. 
@@ -20,6 +22,11 @@
         public override string ToString()
         {
             return Word + ": " + Translation;
+        }
+
+        public object Clone()
+        {
+            return new TranslationItem(Word, Translation);
         }
     }
 }

@@ -54,6 +54,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Models\TranslationItem.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\SettingsUtility.cs" />
@@ -112,9 +113,14 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Resource Include="Images\configuration.png" />
+    <Resource Include="Resources\arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\configuration.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\hovered_arrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

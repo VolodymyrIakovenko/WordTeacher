@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using WordTeacher.Extensions;
 using WordTeacher.Utilities;
 using WordTeacher.ViewModels;
 
@@ -25,7 +26,7 @@ namespace WordTeacher
             var mainViewModel = Current.Resources["MainViewModel"] as ITranslationsLoadable;
             if (mainViewModel != null)
             {
-                mainViewModel.ReloadSettings(translationItems);
+                mainViewModel.ReloadSettings(translationItems.Clone());
             }
         }
     }

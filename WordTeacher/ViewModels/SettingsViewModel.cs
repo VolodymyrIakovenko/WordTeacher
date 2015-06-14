@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using WordTeacher.Commands;
+using WordTeacher.Extensions;
 using WordTeacher.Models;
 using WordTeacher.Utilities;
 
@@ -60,10 +61,11 @@ namespace WordTeacher.ViewModels
 
         public bool ExitSettings()
         {
-            if (AreUnsavedChanges && ShowExitDialog() != MessageBoxResult.Yes)
+            if (AreUnsavedChanges && ShowExitDialog() == MessageBoxResult.No)
                 return false;
 
-            TranslationItems = new ObservableCollection<TranslationItem>(SavedTranslationItems);
+            TranslationItems = new ObservableCollection<TranslationItem>(SavedTranslationItems.Clone());
+            AreUnsavedChanges = false;
             return true;
         }
 
@@ -88,15 +90,15 @@ namespace WordTeacher.ViewModels
 
         private void SaveLocalSettings()
         {
-            SavedTranslationItems = new List<TranslationItem>(TranslationItems);
+            SavedTranslationItems = new List<TranslationItem>(TranslationItems.Clone());
             AreUnsavedChanges = false;
         }
 
         private void CloseWindow()
         {
-            if (!ExitSettings()) 
+            if (!ExitSettings())
                 return;
-       
+
             var handler = RequestClose;
             if (handler != null)
                 handler.Invoke(this, new EventArgs());
