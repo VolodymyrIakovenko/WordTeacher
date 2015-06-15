@@ -26,6 +26,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!--Word Table-->
@@ -46,8 +48,11 @@
             </DataGrid.Columns>
         </DataGrid>
         
+        <!--Check Box Settings-->
+        <CheckBox Grid.Row="2" Content="Randomly choose next word" IsChecked="{Binding Path=RandomSetting, Mode=TwoWay}"/>
+        
         <!--Buttons Panel-->
-        <Grid Grid.Row="2" Height="30">
+        <Grid Grid.Row="4" Height="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.1*"/>
                 <ColumnDefinition Width="*"/>

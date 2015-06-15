@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -8,12 +7,13 @@ using System.Windows.Input;
 using WordTeacher.Commands;
 using WordTeacher.Extensions;
 using WordTeacher.Models;
+using WordTeacher.Properties;
 using WordTeacher.Utilities;
 using WordTeacher.Views;
 
 namespace WordTeacher.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged, ITranslationsLoadable
+    public class MainViewModel : INotifyPropertyChanged  
     {
         private double _positionX;
         private double _positionY;
@@ -29,6 +29,9 @@ namespace WordTeacher.ViewModels
 
         public MainViewModel()
         {
+            SettingsUtility.CheckSettingsFolder();
+            TranslationItems = new ObservableCollection<TranslationItem>(SettingsUtility.Load());
+
             ArrangeWindowPosition();
         }
 
@@ -138,11 +141,6 @@ namespace WordTeacher.ViewModels
             }
         }
 
-        public void ReloadSettings(IList<TranslationItem> translationItems)
-        {
-            TranslationItems = new ObservableCollection<TranslationItem>(translationItems);
-        }
-
         protected void OnPropertyChanged(string name)
         {
             var handler = PropertyChanged;
@@ -162,9 +160,24 @@ namespace WordTeacher.ViewModels
 
         private void NextItem()
         {
-            _translationItemIndex++;
-            if (_translationItemIndex >= TranslationItems.Count)
-                _translationItemIndex = 0;
+            if (TranslationItems.Count <= 1)
+                return;
+
+            if (Settings.Default.NextRandom)
+            {
+                var oldValue = _translationItemIndex;
+                var rnd = new Random();
+                while (oldValue == _translationItemIndex)
+                {
+                    _translationItemIndex = rnd.Next(0, TranslationItems.Count);
+                }
+            }
+            else
+            {
+                _translationItemIndex++;
+                if (_translationItemIndex >= TranslationItems.Count)
+                    _translationItemIndex = 0;
+            }
             OnPropertyChanged("CurrentTranslationItem");
         }
 

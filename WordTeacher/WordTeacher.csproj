@@ -63,7 +63,6 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\SettingsUtility.cs" />
     <Compile Include="ViewModels\ICloseable.cs" />
-    <Compile Include="ViewModels\ITranslationsLoadable.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>

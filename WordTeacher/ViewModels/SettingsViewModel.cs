@@ -2,23 +2,35 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using WordTeacher.Commands;
 using WordTeacher.Extensions;
 using WordTeacher.Models;
+using WordTeacher.Properties;
 using WordTeacher.Utilities;
 
 namespace WordTeacher.ViewModels
 {
-    public class SettingsViewModel: INotifyPropertyChanged, ICloseable, ITranslationsLoadable
+    public class SettingsViewModel: INotifyPropertyChanged, ICloseable
     {
         private bool _areUnsavedChanges;
+        private bool _randomSetting;
         private ICommand _saveCommand;
         private ICommand _exitCommand;
         private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>();
 
         public List<TranslationItem> SavedTranslationItems = new List<TranslationItem>();
+
+        public SettingsViewModel()
+        {
+            SettingsUtility.CheckSettingsFolder();
+            TranslationItems = new ObservableCollection<TranslationItem>(SettingsUtility.Load());
+            SavedTranslationItems = new List<TranslationItem>(TranslationItems.Clone());
+            RandomSetting = Settings.Default.NextRandom;
+            UpdateIfAnyNewSettings();
+        }
 
         public bool AreUnsavedChanges
         {
@@ -27,6 +39,17 @@ namespace WordTeacher.ViewModels
             {
                 _areUnsavedChanges = value;
                 OnPropertyChanged("AreUnsavedChanges");
+            }
+        }
+
+        public bool RandomSetting
+        {
+            get { return _randomSetting; }
+            set
+            {
+                _randomSetting = value;
+                OnPropertyChanged("RandomSetting");
+                UpdateIfAnyNewSettings();
             }
         }
 
@@ -59,20 +82,25 @@ namespace WordTeacher.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<EventArgs> RequestClose;
 
+        /// <summary>
+        /// Exits the settings window.
+        /// </summary>
+        /// <returns></returns>
         public bool ExitSettings()
         {
             if (AreUnsavedChanges && ShowExitDialog() == MessageBoxResult.No)
                 return false;
 
-            TranslationItems = new ObservableCollection<TranslationItem>(SavedTranslationItems.Clone());
-            AreUnsavedChanges = false;
+            RollbackSettings();
             return true;
         }
 
-        public void ReloadSettings(IList<TranslationItem> translationItems)
+        /// <summary>
+        /// Update the flag, which defines if there are any unsaved settings.
+        /// </summary>
+        public void UpdateIfAnyNewSettings()
         {
-            TranslationItems = new ObservableCollection<TranslationItem>(translationItems);
-            SaveLocalSettings();
+            AreUnsavedChanges = CheckIfAnyNewSettings();
         }
 
         protected void OnPropertyChanged(string name)
@@ -82,18 +110,39 @@ namespace WordTeacher.ViewModels
                 handler(this, new PropertyChangedEventArgs(name));
         }
 
-        private void SaveSettings()
+        /// <summary>
+        /// Detects if new settings don't equal to saved ones.
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckIfAnyNewSettings()
         {
-            SettingsUtility.Save(new List<TranslationItem>(TranslationItems));
-            SaveLocalSettings();
+            return RandomSetting != Settings.Default.NextRandom
+                  || !TranslationItems.SequenceEqual(SavedTranslationItems);
         }
 
-        private void SaveLocalSettings()
+        /// <summary>
+        /// Rollbacks all settings to saved ones.
+        /// </summary>
+        private void RollbackSettings()
         {
-            SavedTranslationItems = new List<TranslationItem>(TranslationItems.Clone());
+            TranslationItems = new ObservableCollection<TranslationItem>(SavedTranslationItems.Clone());
+            RandomSetting = Settings.Default.NextRandom;
             AreUnsavedChanges = false;
         }
 
+        /// <summary>
+        /// Save all settings.
+        /// </summary>
+        private void SaveSettings()
+        {
+            SettingsUtility.Save(new List<TranslationItem>(TranslationItems));
+            Settings.Default.NextRandom = RandomSetting;
+            Settings.Default.Save();
+
+            SavedTranslationItems = new List<TranslationItem>(TranslationItems.Clone());
+            AreUnsavedChanges = false;
+        }
+    
         private void CloseWindow()
         {
             if (!ExitSettings())

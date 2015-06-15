@@ -2,7 +2,7 @@
 
 namespace WordTeacher.Models
 {
-    public class TranslationItem: ICloneable
+    public class TranslationItem : ICloneable, IEquatable<TranslationItem>
     {
         /// <summary>
         /// Without empty constructor datagrid can't be editable. 
@@ -18,6 +18,16 @@ namespace WordTeacher.Models
         public string Word { get; set; }
 
         public string Translation { get; set; }
+
+        public bool Equals(TranslationItem other)
+        {
+            return this.Word.Equals(other.Word) && this.Translation.Equals(other.Translation);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Word.GetHashCode();
+        }
 
         public override string ToString()
         {

@@ -35,7 +35,7 @@ namespace WordTeacher.Views
                 {
                     var settingsViewModel = DataContext as SettingsViewModel;
                     if (settingsViewModel != null)
-                        settingsViewModel.AreUnsavedChanges = true;
+                        settingsViewModel.UpdateIfAnyNewSettings();
                     return null;
                 }), DispatcherPriority.Background, new object[] { null });
             }

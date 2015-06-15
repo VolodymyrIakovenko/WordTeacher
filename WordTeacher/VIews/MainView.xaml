@@ -139,7 +139,7 @@
                                 <DoubleAnimation Storyboard.TargetName="TranslationItemWindow"
                                                  Storyboard.TargetProperty="Top"
                                                  From="{Binding ElementName=TranslationItemWindow, Path=Top}"
-                                                 Duration="0:0:.7"
+                                                 Duration="0:0:.3"
                                                  Completed="TimelineOnCompleted">
                                     <DoubleAnimation.To>
                                         <MultiBinding Converter="{StaticResource HiddenTopConverter}">
