@@ -17,7 +17,7 @@ namespace WordTeacher.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged, IDisposable
     {
-        private const int MillisecondsInMinute = 1 * 1000;
+        private const int MillisecondsInMinute = 60 * 1000;
 
         private readonly Timer _autoChangeTimer;
 
