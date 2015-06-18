@@ -1,8 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Threading;
+
 using WordTeacher.ViewModels;
 
 namespace WordTeacher.Views
@@ -45,6 +48,34 @@ namespace WordTeacher.Views
         {
             var settingsViewModel = DataContext as SettingsViewModel;
             e.Cancel = settingsViewModel != null && !settingsViewModel.ExitSettings();
+        }
+
+        private void TextBoxOnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var newChar = e.Text[e.Text.Length - 1];
+            if (!char.IsDigit(newChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextBoxBaseOnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null)
+                return;
+
+            // Textbox's value should not be empty and less than 1.
+            if (textBox.Text.Equals(string.Empty) || textBox.Text.Equals("0"))
+                textBox.Text = "1";
+
+            // Remove zeros from the beginning of the textbox's value.
+            textBox.Text = textBox.Text.TrimStart('0');
+
+            var settingsViewModel = DataContext as SettingsViewModel;
+            if (settingsViewModel != null)
+                settingsViewModel.ChangeInMinutesSetting = Convert.ToInt32(textBox.Text);
+            
         }
     }
 }

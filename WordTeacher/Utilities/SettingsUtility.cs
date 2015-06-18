@@ -40,8 +40,10 @@ namespace WordTeacher.Utilities
             if (!File.Exists(path))
                 return new List<TranslationItem>();
 
-            var fileStream = new FileStream(path, FileMode.Open);
-            return (List<TranslationItem>)serializer.Deserialize(fileStream);
+            using (var fileStream = new FileStream(path, FileMode.Open))
+            {
+                return (List<TranslationItem>)serializer.Deserialize(fileStream);
+            }
         }
     }
 }

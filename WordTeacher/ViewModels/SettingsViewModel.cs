@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+
 using WordTeacher.Commands;
 using WordTeacher.Extensions;
 using WordTeacher.Models;
@@ -17,6 +18,9 @@ namespace WordTeacher.ViewModels
     {
         private bool _areUnsavedChanges;
         private bool _randomSetting;
+        private bool _autoChangeSetting;
+        private int _changeInMinutesSetting;
+
         private ICommand _saveCommand;
         private ICommand _exitCommand;
         private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>();
@@ -28,7 +32,11 @@ namespace WordTeacher.ViewModels
             SettingsUtility.CheckSettingsFolder();
             TranslationItems = new ObservableCollection<TranslationItem>(SettingsUtility.Load());
             SavedTranslationItems = new List<TranslationItem>(TranslationItems.Clone());
+            
             RandomSetting = Settings.Default.NextRandom;
+            AutoChangeSetting = Settings.Default.AutoChange;
+            ChangeInMinutesSetting = Settings.Default.ChangeInMinutes;
+
             UpdateIfAnyNewSettings();
         }
 
@@ -52,6 +60,28 @@ namespace WordTeacher.ViewModels
                 UpdateIfAnyNewSettings();
             }
         }
+
+        public bool AutoChangeSetting
+        {
+            get { return _autoChangeSetting; }
+            set
+            {
+                _autoChangeSetting = value;
+                OnPropertyChanged("AutoChangeSetting");
+                UpdateIfAnyNewSettings();
+            }
+        }
+
+        public int ChangeInMinutesSetting
+        {
+            get { return _changeInMinutesSetting; }
+            set
+            {
+                _changeInMinutesSetting = value;
+                OnPropertyChanged("ChangeInMinutesSetting");
+                UpdateIfAnyNewSettings();
+            }
+        } 
 
         public ObservableCollection<TranslationItem> TranslationItems
         {
@@ -116,8 +146,10 @@ namespace WordTeacher.ViewModels
         /// <returns></returns>
         private bool CheckIfAnyNewSettings()
         {
-            return RandomSetting != Settings.Default.NextRandom
-                  || !TranslationItems.SequenceEqual(SavedTranslationItems);
+            return RandomSetting != Settings.Default.NextRandom ||
+                   AutoChangeSetting != Settings.Default.AutoChange ||
+                   ChangeInMinutesSetting != Settings.Default.ChangeInMinutes ||
+                   !TranslationItems.SequenceEqual(SavedTranslationItems);
         }
 
         /// <summary>
@@ -127,6 +159,9 @@ namespace WordTeacher.ViewModels
         {
             TranslationItems = new ObservableCollection<TranslationItem>(SavedTranslationItems.Clone());
             RandomSetting = Settings.Default.NextRandom;
+            AutoChangeSetting = Settings.Default.AutoChange;
+            ChangeInMinutesSetting = Settings.Default.ChangeInMinutes;
+            
             AreUnsavedChanges = false;
         }
 
@@ -137,6 +172,8 @@ namespace WordTeacher.ViewModels
         {
             SettingsUtility.Save(new List<TranslationItem>(TranslationItems));
             Settings.Default.NextRandom = RandomSetting;
+            Settings.Default.AutoChange = AutoChangeSetting;
+            Settings.Default.ChangeInMinutes = ChangeInMinutesSetting;
             Settings.Default.Save();
 
             SavedTranslationItems = new List<TranslationItem>(TranslationItems.Clone());

@@ -46,5 +46,29 @@ namespace WordTeacher.Properties {
                 this["RunOnStartup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoChange {
+            get {
+                return ((bool)(this["AutoChange"]));
+            }
+            set {
+                this["AutoChange"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ChangeInMinutes {
+            get {
+                return ((int)(this["ChangeInMinutes"]));
+            }
+            set {
+                this["ChangeInMinutes"] = value;
+            }
+        }
     }
 }

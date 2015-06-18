@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace WordTeacher
 {
@@ -7,5 +8,15 @@ namespace WordTeacher
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+
+            var mainViewModel = Current.Resources["MainViewModel"] as IDisposable;
+            if (mainViewModel != null)
+            {
+                mainViewModel.Dispose();
+            }
+        }
     }
 }

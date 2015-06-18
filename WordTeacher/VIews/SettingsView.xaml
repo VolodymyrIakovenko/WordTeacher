@@ -28,6 +28,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!--Word Table-->
@@ -48,11 +50,26 @@
             </DataGrid.Columns>
         </DataGrid>
         
-        <!--Check Box Settings-->
+        <!--Next Random Setting-->
         <CheckBox Grid.Row="2" Content="Randomly choose next word" IsChecked="{Binding Path=RandomSetting, Mode=TwoWay}"/>
-        
+
+        <!--Timer Setting-->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <CheckBox Grid.Column="0" x:Name="AutoChangeCheckBox"  Content="Automatically change a word every: " IsChecked="{Binding Path=AutoChangeSetting, Mode=TwoWay}"/>
+            <TextBox Grid.Column="2" MaxLength="3" TextAlignment="Right" IsEnabled="{Binding ElementName=AutoChangeCheckBox, Path=IsChecked}" Text="{Binding ChangeInMinutesSetting, Mode=OneWay}" PreviewTextInput="TextBoxOnPreviewTextInput" TextChanged="TextBoxBaseOnTextChanged"/>
+            <TextBlock Grid.Column="4" Text="minutes"/>
+        </Grid>
+
         <!--Buttons Panel-->
-        <Grid Grid.Row="4" Height="30">
+        <Grid Grid.Row="6" Height="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.1*"/>
                 <ColumnDefinition Width="*"/>

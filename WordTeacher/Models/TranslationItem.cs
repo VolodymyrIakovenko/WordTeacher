@@ -26,7 +26,7 @@ namespace WordTeacher.Models
 
         public override int GetHashCode()
         {
-            return this.Word.GetHashCode();
+            return this.Word == null ? 0 : this.Word.GetHashCode();
         }
 
         public override string ToString()

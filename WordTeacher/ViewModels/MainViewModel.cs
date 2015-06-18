@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,8 +15,12 @@ using WordTeacher.Views;
 
 namespace WordTeacher.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged  
+    public class MainViewModel : INotifyPropertyChanged, IDisposable
     {
+        private const int MillisecondsInMinute = 1 * 1000;
+
+        private readonly Timer _autoChangeTimer;
+
         private double _positionX;
         private double _positionY;
         private bool _isSettingsOpened;
@@ -29,10 +35,25 @@ namespace WordTeacher.ViewModels
 
         public MainViewModel()
         {
+            // Load translation items from appdata files.
             SettingsUtility.CheckSettingsFolder();
             TranslationItems = new ObservableCollection<TranslationItem>(SettingsUtility.Load());
 
+            // Subscribe to settings changes.
+            Settings.Default.SettingsSaving += DefaultSettingsOnSettingsSaving;
+
+            // Initialize word auto change timer.
+            _autoChangeTimer = new Timer();
+            _autoChangeTimer.Elapsed += (sender, args) => NextItem();
+            UpdateAutoChangeSettings(Settings.Default.AutoChange);
+
+            // Adjust position of the main view.
             ArrangeWindowPosition();
+        }
+
+        private void DefaultSettingsOnSettingsSaving(object sender, CancelEventArgs cancelEventArgs)
+        {
+            UpdateAutoChangeSettings(Settings.Default.AutoChange);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -100,7 +121,7 @@ namespace WordTeacher.ViewModels
         /// </summary>
         public TranslationItem CurrentTranslationItem
         {
-            get { return TranslationItems[_translationItemIndex]; }
+            get { return TranslationItems.Any() ? TranslationItems[_translationItemIndex] : new TranslationItem(string.Empty, string.Empty); }
         }
 
         /// <summary>
@@ -139,6 +160,11 @@ namespace WordTeacher.ViewModels
             {
                 return _closeCommand ?? (_closeCommand = new CommandHandler(CloseApplication, true));
             }
+        }
+
+        public void Dispose()
+        {
+            _autoChangeTimer.Dispose();
         }
 
         protected void OnPropertyChanged(string name)
@@ -181,6 +207,26 @@ namespace WordTeacher.ViewModels
             OnPropertyChanged("CurrentTranslationItem");
         }
 
+        private void UpdateAutoChangeSettings(bool isEnabled)
+        {
+            var newInterval = Settings.Default.ChangeInMinutes * MillisecondsInMinute;
+            if (Math.Abs(_autoChangeTimer.Interval/MillisecondsInMinute - newInterval) >= 1)
+            {
+                if (_autoChangeTimer.Enabled)
+                {
+                    _autoChangeTimer.Enabled = false;
+                    _autoChangeTimer.Interval = newInterval;
+                    _autoChangeTimer.Enabled = true;
+                }
+                else
+                {
+                    _autoChangeTimer.Interval = newInterval;
+                }
+            }
+
+            _autoChangeTimer.Enabled = isEnabled;
+        }
+
         private void OpenSettings()
         {
             var settingsView = new SettingsView();
@@ -198,7 +244,7 @@ namespace WordTeacher.ViewModels
             {
                 // Copy items from settings.
                 var settingsViewModel = (SettingsViewModel)settingsView.DataContext;
-                TranslationItems = new ObservableCollection<TranslationItem>(settingsViewModel.SavedTranslationItems.Clone());                    
+                TranslationItems = new ObservableCollection<TranslationItem>(settingsViewModel.SavedTranslationItems.Clone());
             }
 
             IsSettingsOpened = false;
