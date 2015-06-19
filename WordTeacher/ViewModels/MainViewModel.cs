@@ -26,6 +26,7 @@ namespace WordTeacher.ViewModels
         private bool _isSettingsOpened;
         private bool _isHidden;
         private int _translationItemIndex;
+        private SettingsViewModel _settingsViewModel;
 
         private ICommand _nextItemCommand;
         private ICommand _closeCommand;
@@ -45,7 +46,7 @@ namespace WordTeacher.ViewModels
             // Initialize word auto change timer.
             _autoChangeTimer = new Timer();
             _autoChangeTimer.Elapsed += (sender, args) => NextItem();
-            UpdateAutoChangeSettings(Settings.Default.AutoChange);
+            UpdateAutoChangeSettings();
 
             // Adjust position of the main view.
             ArrangeWindowPosition();
@@ -53,7 +54,7 @@ namespace WordTeacher.ViewModels
 
         private void DefaultSettingsOnSettingsSaving(object sender, CancelEventArgs cancelEventArgs)
         {
-            UpdateAutoChangeSettings(Settings.Default.AutoChange);
+            UpdateAutoChangeSettings();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -140,26 +141,17 @@ namespace WordTeacher.ViewModels
 
         public ICommand NextItemCommand
         {
-            get
-            {
-                return _nextItemCommand ?? (_nextItemCommand = new CommandHandler(NextItem, true));
-            }
+            get { return _nextItemCommand ?? (_nextItemCommand = new CommandHandler(NextItem, true)); }
         }
 
         public ICommand SettingsCommand
         {
-            get
-            {
-                return _settingsCommand ?? (_settingsCommand = new CommandHandler(OpenSettings, true));
-            }
+            get { return _settingsCommand ?? (_settingsCommand = new CommandHandler(OpenSettings, true)); }
         }
 
         public ICommand CloseCommand
         {
-            get
-            {
-                return _closeCommand ?? (_closeCommand = new CommandHandler(CloseApplication, true));
-            }
+            get { return _closeCommand ?? (_closeCommand = new CommandHandler(CloseApplication, true)); }
         }
 
         public void Dispose()
@@ -204,10 +196,18 @@ namespace WordTeacher.ViewModels
                 if (_translationItemIndex >= TranslationItems.Count)
                     _translationItemIndex = 0;
             }
-            OnPropertyChanged("CurrentTranslationItem");
+
+            UpdateCurrentItem();
         }
 
-        private void UpdateAutoChangeSettings(bool isEnabled)
+        private void UpdateCurrentItem()
+        {
+            OnPropertyChanged("CurrentTranslationItem");
+            if (_settingsViewModel != null)
+                _settingsViewModel.ShownTranslationItem = CurrentTranslationItem;
+        }
+
+        private void UpdateAutoChangeSettings()
         {
             var newInterval = Settings.Default.ChangeInMinutes * MillisecondsInMinute;
             if (Math.Abs(_autoChangeTimer.Interval/MillisecondsInMinute - newInterval) >= 1)
@@ -224,12 +224,16 @@ namespace WordTeacher.ViewModels
                 }
             }
 
-            _autoChangeTimer.Enabled = isEnabled;
+            _autoChangeTimer.Enabled = Settings.Default.AutoChange;
         }
 
         private void OpenSettings()
         {
             var settingsView = new SettingsView();
+
+            _settingsViewModel = (SettingsViewModel)settingsView.DataContext;
+            _settingsViewModel.ShownTranslationItem = CurrentTranslationItem;
+            _settingsViewModel.SelectedWordUpdated += SettingsViewModelOnSelectedWordUpdated;
 
             settingsView.Closed += SettingsViewOnClosed;
             settingsView.Show();
@@ -237,14 +241,33 @@ namespace WordTeacher.ViewModels
             IsSettingsOpened = true;
         }
 
+        private void SettingsViewModelOnSelectedWordUpdated(object sender, TranslationItem translationItem)
+        {
+            if (_settingsViewModel == null)
+                return;
+
+            var newIndex = TranslationItems.IndexOf(translationItem);
+            if (newIndex < 0 || newIndex == _translationItemIndex || newIndex >= TranslationItems.Count)
+                return;
+
+            _translationItemIndex = newIndex;
+            UpdateCurrentItem();
+
+            // Restart the auto change timer.
+            if (!_autoChangeTimer.Enabled) 
+                return;
+
+            _autoChangeTimer.Enabled = false;
+            _autoChangeTimer.Enabled = true;
+        }
+
         private void SettingsViewOnClosed(object sender, EventArgs eventArgs)
         {
-            var settingsView = sender as SettingsView;
-            if (settingsView != null)
+            if (_settingsViewModel != null )
             {
                 // Copy items from settings.
-                var settingsViewModel = (SettingsViewModel)settingsView.DataContext;
-                TranslationItems = new ObservableCollection<TranslationItem>(settingsViewModel.SavedTranslationItems.Clone());
+                TranslationItems = new ObservableCollection<TranslationItem>(_settingsViewModel.SavedTranslationItems.Clone());
+                _settingsViewModel.SelectedWordUpdated -= SettingsViewModelOnSelectedWordUpdated;
             }
 
             IsSettingsOpened = false;

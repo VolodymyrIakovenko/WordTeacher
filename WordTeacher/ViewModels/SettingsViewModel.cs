@@ -20,7 +20,10 @@ namespace WordTeacher.ViewModels
         private bool _randomSetting;
         private bool _autoChangeSetting;
         private int _changeInMinutesSetting;
+        private TranslationItem _selectedTranslationItem;
+        private TranslationItem _shownTranslationItem;
 
+        private ICommand _updateWordCommand;
         private ICommand _saveCommand;
         private ICommand _exitCommand;
         private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>();
@@ -47,6 +50,7 @@ namespace WordTeacher.ViewModels
             {
                 _areUnsavedChanges = value;
                 OnPropertyChanged("AreUnsavedChanges");
+                OnPropertyChanged("IsUpdateWordEnabled");
             }
         }
 
@@ -81,6 +85,31 @@ namespace WordTeacher.ViewModels
                 OnPropertyChanged("ChangeInMinutesSetting");
                 UpdateIfAnyNewSettings();
             }
+        }
+
+        public bool IsUpdateWordEnabled
+        {
+            get { return SelectedTranslationItem != null && !SelectedTranslationItem.Equals(ShownTranslationItem) && !AreUnsavedChanges; }
+        } 
+
+        public TranslationItem SelectedTranslationItem
+        {
+            get { return _selectedTranslationItem; }
+            set
+            {
+                _selectedTranslationItem = value;
+                OnPropertyChanged("IsUpdateWordEnabled");
+            }
+        }
+
+        public TranslationItem ShownTranslationItem
+        {
+            get { return _shownTranslationItem; }
+            set
+            {
+                _shownTranslationItem = value;
+                OnPropertyChanged("IsUpdateWordEnabled");
+            }
         } 
 
         public ObservableCollection<TranslationItem> TranslationItems
@@ -93,24 +122,24 @@ namespace WordTeacher.ViewModels
             }
         }
 
+        public ICommand UpdateWordCommand
+        {
+            get { return _updateWordCommand ?? (_updateWordCommand = new CommandHandler(UpdateWord, true)); }
+        }
+
         public ICommand SaveCommand
         {
-            get
-            {
-                return _saveCommand ?? (_saveCommand = new CommandHandler(SaveSettings, true));
-            }
+            get { return _saveCommand ?? (_saveCommand = new CommandHandler(SaveSettings, true)); }
         }
 
         public ICommand ExitCommand
         {
-            get 
-            {
-                return _exitCommand ?? (_exitCommand = new CommandHandler(CloseWindow, true));
-            }
+            get { return _exitCommand ?? (_exitCommand = new CommandHandler(CloseWindow, true)); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<EventArgs> RequestClose;
+        public event EventHandler<TranslationItem> SelectedWordUpdated;
 
         /// <summary>
         /// Exits the settings window.
@@ -138,6 +167,15 @@ namespace WordTeacher.ViewModels
             var handler = PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(name));
+        }
+
+        private void UpdateWord()
+        {
+            var handler = SelectedWordUpdated;
+            if (handler != null)
+                handler.Invoke(this, SelectedTranslationItem);
+
+            SelectedTranslationItem = null;
         }
 
         /// <summary>

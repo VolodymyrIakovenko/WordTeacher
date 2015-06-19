@@ -21,7 +21,7 @@ namespace WordTeacher.Models
 
         public bool Equals(TranslationItem other)
         {
-            return this.Word.Equals(other.Word) && this.Translation.Equals(other.Translation);
+            return other != null && this.Word.Equals(other.Word) && this.Translation.Equals(other.Translation);
         }
 
         public override int GetHashCode()

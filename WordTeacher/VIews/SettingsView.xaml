@@ -30,6 +30,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!--Word Table-->
@@ -42,19 +44,31 @@
                   ItemsSource="{Binding TranslationItems}"  
                   RowEditEnding="DataGridOnRowEditEnding"
                   AutoGenerateColumns="False"
-                  RowHeight="26">
+                  RowHeight="26"
+                  SelectedItem="{Binding SelectedTranslationItem, Mode=TwoWay}">
             
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Word" Width="0.25*" Binding="{Binding Word}" IsReadOnly="False"/>
                 <DataGridTextColumn Header="Translation" Width="0.75*" Binding="{Binding Translation}" IsReadOnly="False"/>
             </DataGrid.Columns>
         </DataGrid>
-        
+
+        <!--Update Word Button-->
+        <Grid Grid.Row="2" Height="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.65*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.65*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1" Content="Show Selected Word" Command="{Binding UpdateWordCommand}" IsEnabled="{Binding IsUpdateWordEnabled}"/>
+        </Grid>
+
         <!--Next Random Setting-->
-        <CheckBox Grid.Row="2" Content="Randomly choose next word" IsChecked="{Binding Path=RandomSetting, Mode=TwoWay}"/>
+        <CheckBox Grid.Row="4" Content="Randomly choose next word" IsChecked="{Binding Path=RandomSetting, Mode=TwoWay}"/>
 
         <!--Timer Setting-->
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="5"/>
@@ -68,8 +82,8 @@
             <TextBlock Grid.Column="4" Text="minutes"/>
         </Grid>
 
-        <!--Buttons Panel-->
-        <Grid Grid.Row="6" Height="30">
+        <!--Changes Buttons Panel-->
+        <Grid Grid.Row="8" Height="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.1*"/>
                 <ColumnDefinition Width="*"/>
