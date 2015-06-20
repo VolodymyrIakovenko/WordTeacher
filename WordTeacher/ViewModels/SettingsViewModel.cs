@@ -18,6 +18,7 @@ namespace WordTeacher.ViewModels
     {
         private bool _areUnsavedChanges;
         private bool _randomSetting;
+        private bool _autoStartSetting;
         private bool _autoChangeSetting;
         private int _changeInMinutesSetting;
         private TranslationItem _selectedTranslationItem;
@@ -37,6 +38,7 @@ namespace WordTeacher.ViewModels
             SavedTranslationItems = new List<TranslationItem>(TranslationItems.Clone());
             
             RandomSetting = Settings.Default.NextRandom;
+            AutoStartSetting = Settings.Default.AutoStart;
             AutoChangeSetting = Settings.Default.AutoChange;
             ChangeInMinutesSetting = Settings.Default.ChangeInMinutes;
 
@@ -61,6 +63,17 @@ namespace WordTeacher.ViewModels
             {
                 _randomSetting = value;
                 OnPropertyChanged("RandomSetting");
+                UpdateIfAnyNewSettings();
+            }
+        }
+
+        public bool AutoStartSetting
+        {
+            get { return _autoStartSetting; }
+            set
+            {
+                _autoStartSetting = value;
+                OnPropertyChanged("AutoStartSetting");
                 UpdateIfAnyNewSettings();
             }
         }
@@ -185,6 +198,7 @@ namespace WordTeacher.ViewModels
         private bool CheckIfAnyNewSettings()
         {
             return RandomSetting != Settings.Default.NextRandom ||
+                   AutoStartSetting != Settings.Default.AutoStart ||
                    AutoChangeSetting != Settings.Default.AutoChange ||
                    ChangeInMinutesSetting != Settings.Default.ChangeInMinutes ||
                    !TranslationItems.SequenceEqual(SavedTranslationItems);
@@ -197,6 +211,7 @@ namespace WordTeacher.ViewModels
         {
             TranslationItems = new ObservableCollection<TranslationItem>(SavedTranslationItems.Clone());
             RandomSetting = Settings.Default.NextRandom;
+            AutoStartSetting = Settings.Default.AutoStart;
             AutoChangeSetting = Settings.Default.AutoChange;
             ChangeInMinutesSetting = Settings.Default.ChangeInMinutes;
             
@@ -210,6 +225,7 @@ namespace WordTeacher.ViewModels
         {
             SettingsUtility.Save(new List<TranslationItem>(TranslationItems));
             Settings.Default.NextRandom = RandomSetting;
+            Settings.Default.AutoStart = AutoStartSetting;
             Settings.Default.AutoChange = AutoChangeSetting;
             Settings.Default.ChangeInMinutes = ChangeInMinutesSetting;
             Settings.Default.Save();

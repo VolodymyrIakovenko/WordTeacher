@@ -32,6 +32,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!--Word Table-->
@@ -67,8 +69,11 @@
         <!--Next Random Setting-->
         <CheckBox Grid.Row="4" Content="Randomly choose next word" IsChecked="{Binding Path=RandomSetting, Mode=TwoWay}"/>
 
+        <!--Auto Start Setting-->
+        <CheckBox Grid.Row="6" Content="Run application on Windows startup" IsChecked="{Binding Path=AutoStartSetting, Mode=TwoWay}"/>
+
         <!--Timer Setting-->
-        <Grid Grid.Row="6">
+        <Grid Grid.Row="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="5"/>
@@ -83,7 +88,7 @@
         </Grid>
 
         <!--Changes Buttons Panel-->
-        <Grid Grid.Row="8" Height="30">
+        <Grid Grid.Row="10" Height="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.1*"/>
                 <ColumnDefinition Width="*"/>
