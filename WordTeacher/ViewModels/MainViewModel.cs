@@ -2,10 +2,11 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
-
+using System.Windows.Interop;
 using WordTeacher.Commands;
 using WordTeacher.Extensions;
 using WordTeacher.Models;
@@ -23,6 +24,10 @@ namespace WordTeacher.ViewModels
 
         private double _positionX;
         private double _positionY;
+        private double _height;
+        private double _width;
+        private double _dragginPosX;
+        private double _dragginPosY;
         private bool _isSettingsOpened;
         private bool _isHidden;
         private int _translationItemIndex;
@@ -48,7 +53,9 @@ namespace WordTeacher.ViewModels
             _autoChangeTimer.Elapsed += (sender, args) => NextItem();
             UpdateAutoChangeSettings();
 
-            // Adjust position of the main view.
+            // Adjust the main view.
+            Height = 62;
+            Width = 300;
             ArrangeWindowPosition();
         }
 
@@ -86,6 +93,32 @@ namespace WordTeacher.ViewModels
         }
 
         /// <summary>
+        /// Height of the window.
+        /// </summary>
+        public double Height
+        {
+            get { return _height; }
+            set
+            {
+                _height = value;
+                OnPropertyChanged("Height");
+            }
+        }
+
+        /// <summary>
+        /// Width of the window.
+        /// </summary>
+        public double Width
+        {
+            get { return _width; }
+            set
+            {
+                _width = value;
+                OnPropertyChanged("Width");
+            }
+        }
+
+        /// <summary>
         /// Position of the window on the Y axis.
         /// </summary>
         public bool IsSettingsOpened
@@ -112,6 +145,9 @@ namespace WordTeacher.ViewModels
             }
         }
 
+        /// <summary>
+        /// Image that is shown on collapse/expand button.
+        /// </summary>
         public string CollapseImage
         {
             get { return IsHidden ? "../Resources/expand_arrow.png" : "../Resources/collapse_arrow.png"; }
@@ -157,6 +193,13 @@ namespace WordTeacher.ViewModels
         public void Dispose()
         {
             _autoChangeTimer.Dispose();
+        }
+
+        public void WindowLoaded(IntPtr handle)
+        {
+            var hwndSource = HwndSource.FromHwnd(handle);
+            if (hwndSource != null)
+                hwndSource.AddHook(HwndSourceHookHandler);
         }
 
         protected void OnPropertyChanged(string name)
@@ -271,6 +314,46 @@ namespace WordTeacher.ViewModels
             }
 
             IsSettingsOpened = false;
+        }
+
+        public IntPtr HwndSourceHookHandler(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            switch (msg)
+            {
+                case NativeMethods.WmMoving:
+                {
+                    var rectangle = (NativeMethods.MoveRectangle)Marshal.PtrToStructure(lParam, typeof(NativeMethods.MoveRectangle));
+
+                    
+                    rectangle.Top = (int) PositionY;
+                    rectangle.Bottom = (int) (rectangle.Top + Height);
+                    _dragginPosY = rectangle.Top;
+
+                    if (rectangle.Left < ScreenUtility.GetWorkAreaLeft())
+                    {
+                        rectangle.Left = (int) ScreenUtility.GetWorkAreaLeft();
+                        rectangle.Right = (int) Width;
+                    }
+                    if (rectangle.Right > ScreenUtility.GetWorkAreaRight())
+                    {
+                        rectangle.Right = (int) ScreenUtility.GetWorkAreaRight();
+                        rectangle.Left = (int) (rectangle.Right - Width);
+                    }
+                    _dragginPosX = rectangle.Left;
+
+                    Marshal.StructureToPtr(rectangle, lParam, true);
+                    break;
+                }
+                case NativeMethods.WmExitsizemove:
+                {
+                    // Fixes a problem when after dragging the window can't be shown outside of screen boundaries.
+                    var top = IsHidden ? _dragginPosY : ScreenUtility.GetTopYAxisValue();
+                    NativeMethods.SetWindowPos(hwnd, 0, (int) _dragginPosX, (int) top, (int)Width, (int)Height, 0);
+                    break;
+                }
+            }
+
+            return IntPtr.Zero;
         }
 
         private static void CloseApplication()

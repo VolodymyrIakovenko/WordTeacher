@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:WordTeacher.Converters"
         Title="MainWindow" 
-        Height="62" 
-        Width="300"
+        Height="{Binding Height}" 
+        Width="{Binding Width}"
         WindowStyle="None"
         ResizeMode="NoResize"
         DataContext="{StaticResource MainViewModel}"
@@ -13,7 +13,9 @@
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
-        x:Name="TranslationItemWindow">
+        x:Name="TranslationItemWindow"
+        MouseDown="MainWindowOnMouseDown"
+        Loaded="MainWindowOnLoaded">
     <Window.Left>
         <MultiBinding Converter="{StaticResource CenterPositionConverter}">
             <Binding Path="PositionX"/>
@@ -97,7 +99,7 @@
             </Grid>
         </Border>
 
-        <!--Expanding Button-->
+        <!--Collapse Button-->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -105,7 +107,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
-            <Button Grid.Column="1" x:Name="CollapseButton">
+            <Button Grid.Column="1" x:Name="CollapseButton"  PreviewMouseDown="CollapseButtonOnPreviewMouseDown" PreviewMouseMove="CollapseButtonOnPreviewMouseMove">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
