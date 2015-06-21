@@ -121,9 +121,6 @@
     <Resource Include="Resources\arrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\configuration.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\hovered_arrow.png" />
   </ItemGroup>
   <ItemGroup>

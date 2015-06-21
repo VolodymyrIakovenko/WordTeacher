@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -277,6 +278,7 @@ namespace WordTeacher.ViewModels
             _settingsViewModel = (SettingsViewModel)settingsView.DataContext;
             _settingsViewModel.ShownTranslationItem = CurrentTranslationItem;
             _settingsViewModel.SelectedWordUpdated += SettingsViewModelOnSelectedWordUpdated;
+            _settingsViewModel.WordsSaved += SettingsViewModelOnWordsSaved;
 
             settingsView.Closed += SettingsViewOnClosed;
             settingsView.Show();
@@ -304,12 +306,22 @@ namespace WordTeacher.ViewModels
             _autoChangeTimer.Enabled = true;
         }
 
+        private void SettingsViewModelOnWordsSaved(object sender, List<TranslationItem> translationItems)
+        {
+            if (_translationItemIndex >= translationItems.Count)
+            {
+                _translationItemIndex = 0;
+                UpdateCurrentItem();
+            }
+
+            // Copy items from settings.
+            TranslationItems = new ObservableCollection<TranslationItem>(_settingsViewModel.SavedTranslationItems.Clone());
+        }
+
         private void SettingsViewOnClosed(object sender, EventArgs eventArgs)
         {
             if (_settingsViewModel != null )
             {
-                // Copy items from settings.
-                TranslationItems = new ObservableCollection<TranslationItem>(_settingsViewModel.SavedTranslationItems.Clone());
                 _settingsViewModel.SelectedWordUpdated -= SettingsViewModelOnSelectedWordUpdated;
             }
 

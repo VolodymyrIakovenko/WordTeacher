@@ -30,7 +30,7 @@ namespace WordTeacher.Views
             var dataGrid = sender as DataGrid;
             if (dataGrid == null || e.EditAction != DataGridEditAction.Commit)
                 return;
-           
+
             var view = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource) as ListCollectionView;
             if (view != null && (view.IsAddingNew || view.IsEditingItem))
             {

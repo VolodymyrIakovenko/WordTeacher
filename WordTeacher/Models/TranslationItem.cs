@@ -4,10 +4,17 @@ namespace WordTeacher.Models
 {
     public class TranslationItem : ICloneable, IEquatable<TranslationItem>
     {
+        // Always creates uniqe hash code.
+        private readonly DateTime _timestamp = DateTime.UtcNow;
+
         /// <summary>
         /// Without empty constructor datagrid can't be editable. 
         /// </summary>
-        public TranslationItem() { }
+        public TranslationItem()
+        {
+            Word = string.Empty;
+            Translation = string.Empty;
+        }
 
         public TranslationItem(string word, string translation)
         {
@@ -26,7 +33,7 @@ namespace WordTeacher.Models
 
         public override int GetHashCode()
         {
-            return this.Word == null ? 0 : this.Word.GetHashCode();
+            return _timestamp.GetHashCode();
         }
 
         public override string ToString()

@@ -24,12 +24,14 @@ namespace WordTeacher.ViewModels
         private TranslationItem _selectedTranslationItem;
         private TranslationItem _shownTranslationItem;
 
-        private ICommand _updateWordCommand;
+        private ICommand _addWordCommand;
+        private ICommand _deleteWordCommand;
+        private ICommand _chooseWordCommand;
         private ICommand _saveCommand;
         private ICommand _exitCommand;
         private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>();
 
-        public List<TranslationItem> SavedTranslationItems = new List<TranslationItem>();
+        private List<TranslationItem> _savedTranslationItems = new List<TranslationItem>();
 
         public SettingsViewModel()
         {
@@ -100,9 +102,19 @@ namespace WordTeacher.ViewModels
             }
         }
 
+        public bool IsDeleteWordEnabled
+        {
+            get { return SelectedTranslationItem != null; }
+        }
+
         public bool IsUpdateWordEnabled
         {
-            get { return SelectedTranslationItem != null && !SelectedTranslationItem.Equals(ShownTranslationItem) && !AreUnsavedChanges; }
+            get 
+            { 
+                return SelectedTranslationItem != null && 
+                       !SelectedTranslationItem.Equals(ShownTranslationItem) && 
+                       !AreUnsavedChanges; 
+            }
         } 
 
         public TranslationItem SelectedTranslationItem
@@ -111,6 +123,7 @@ namespace WordTeacher.ViewModels
             set
             {
                 _selectedTranslationItem = value;
+                OnPropertyChanged("IsDeleteWordEnabled");
                 OnPropertyChanged("IsUpdateWordEnabled");
             }
         }
@@ -135,9 +148,31 @@ namespace WordTeacher.ViewModels
             }
         }
 
-        public ICommand UpdateWordCommand
+        public List<TranslationItem> SavedTranslationItems
         {
-            get { return _updateWordCommand ?? (_updateWordCommand = new CommandHandler(UpdateWord, true)); }
+            get { return _savedTranslationItems; }
+            set
+            {
+                _savedTranslationItems = value;
+                var handler = WordsSaved;
+                if (handler != null)
+                    handler.Invoke(this, _savedTranslationItems);
+            }
+        }
+
+        public ICommand AddWordCommand
+        {
+            get { return _addWordCommand ?? (_addWordCommand = new CommandHandler(AddWord, true)); }
+        }
+
+        public ICommand DeleteWordCommand
+        {
+            get { return _deleteWordCommand ?? (_deleteWordCommand = new CommandHandler(DeleteWord, true)); }
+        }
+
+        public ICommand ChooseWordCommand
+        {
+            get { return _chooseWordCommand ?? (_chooseWordCommand = new CommandHandler(ChooseWord, true)); }
         }
 
         public ICommand SaveCommand
@@ -153,6 +188,7 @@ namespace WordTeacher.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<EventArgs> RequestClose;
         public event EventHandler<TranslationItem> SelectedWordUpdated;
+        public event EventHandler<List<TranslationItem>> WordsSaved;
 
         /// <summary>
         /// Exits the settings window.
@@ -182,7 +218,29 @@ namespace WordTeacher.ViewModels
                 handler(this, new PropertyChangedEventArgs(name));
         }
 
-        private void UpdateWord()
+        private void AddWord()
+        {
+            if (TranslationItems == null)
+                TranslationItems = new ObservableCollection<TranslationItem>();
+
+            TranslationItems.Add(new TranslationItem());
+            SelectedTranslationItem = TranslationItems[TranslationItems.Count - 1];
+            UpdateIfAnyNewSettings();
+        }
+
+        private void DeleteWord()
+        {
+            if (TranslationItems == null || SelectedTranslationItem == null)
+                return;
+
+            if (!TranslationItems.Remove(SelectedTranslationItem))
+                return;
+    
+            SelectedTranslationItem = null;
+            UpdateIfAnyNewSettings();
+        }
+
+        private void ChooseWord()
         {
             var handler = SelectedWordUpdated;
             if (handler != null)
