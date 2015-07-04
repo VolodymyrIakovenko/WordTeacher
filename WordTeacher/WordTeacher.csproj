@@ -56,13 +56,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\HideFileExtensionConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\HiddenTopConverter.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Models\Category.cs" />
     <Compile Include="Models\TranslationItem.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Models\NativeMethods.cs" />
-    <Compile Include="Utilities\SettingsUtility.cs" />
+    <Compile Include="Utilities\SettingFilesUtility.cs" />
     <Compile Include="ViewModels\ICloseable.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\SettingsView.xaml.cs">

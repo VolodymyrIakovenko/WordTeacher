@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-
 using WordTeacher.ViewModels;
 
 namespace WordTeacher.Views
@@ -38,10 +37,19 @@ namespace WordTeacher.Views
                 {
                     var settingsViewModel = DataContext as SettingsViewModel;
                     if (settingsViewModel != null)
-                        settingsViewModel.UpdateIfAnyNewSettings();
+                    {
+                        settingsViewModel.TranslationItemsChanged();
+                    }
                     return null;
                 }), DispatcherPriority.Background, new object[] { null });
             }
+        }
+
+        private void SettingsViewOnLoaded(object sender, RoutedEventArgs e)
+        {
+            var settingsViewModel = DataContext as SettingsViewModel;
+            if (settingsViewModel != null) 
+                settingsViewModel.Opened();
         }
 
         private void SettingsViewOnClosing(object sender, CancelEventArgs e)
@@ -77,5 +85,7 @@ namespace WordTeacher.Views
                 settingsViewModel.ChangeInMinutesSetting = Convert.ToInt32(textBox.Text);
             
         }
+
+        
     }
 }

@@ -1,13 +1,16 @@
 ﻿<Window x:Class="WordTeacher.Views.SettingsView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:WordTeacher.Converters"
         Title="Settings" 
         Height="600"
         Width="700"
         DataContext="{StaticResource SettingsViewModel}"
         WindowStartupLocation="CenterScreen"
+        Loaded="SettingsViewOnLoaded"
         Closing="SettingsViewOnClosing">
     <Window.Resources>
+        <converters:HideFileExtensionConverter x:Key="HideFileExtensionConverter" />
         <Style x:Key="CellContentDataGrid" TargetType="{x:Type DataGridCell}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -23,79 +26,156 @@
     
     <Grid Margin="5,5,5,15">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!--Word Table-->
-        <DataGrid Grid.Row="0" 
-                  CellStyle="{StaticResource CellContentDataGrid}"
-                  CanUserAddRows="False" 
-                  CanUserDeleteRows="False" 
-                  IsTabStop="True" 
-                  IsReadOnly="False"
-                  ItemsSource="{Binding TranslationItems}"  
-                  RowEditEnding="DataGridOnRowEditEnding"
-                  AutoGenerateColumns="False"
-                  RowHeight="26"
-                  SelectedItem="{Binding SelectedTranslationItem, Mode=TwoWay}"
-                  SelectionMode="Single">
+        <GroupBox Grid.Row="0">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold" Text="Categories"/>
+            </GroupBox.Header>
             
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Word" Width="0.25*" Binding="{Binding Word}" IsReadOnly="False"/>
-                <DataGridTextColumn Header="Translation" Width="0.75*" Binding="{Binding Translation}" IsReadOnly="False"/>
-            </DataGrid.Columns>
-        </DataGrid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
 
-        <!--Table Buttons-->
-        <Grid Grid.Row="2" Height="30">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.1*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="0.1*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="0.1*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="0.1*"/>
-            </Grid.ColumnDefinitions>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.1*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <ComboBox Grid.Column="1" 
+                              ItemsSource="{Binding CategoryNames, Converter={StaticResource HideFileExtensionConverter}}" 
+                              SelectedValue="{Binding CurrentCategorySetting, Converter={StaticResource HideFileExtensionConverter}}"/>
+                    <TextBox Grid.Column="3" Text="{Binding NewCategoryName, Converter={StaticResource HideFileExtensionConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
 
-            <Button Grid.Column="1" Content="Add" Command="{Binding AddWordCommand}"/>
-            <Button Grid.Column="3" Content="Delete" Command="{Binding DeleteWordCommand}" IsEnabled="{Binding IsDeleteWordEnabled}"/>
-            <Button Grid.Column="5" Content="Choose" Command="{Binding ChooseWordCommand}" IsEnabled="{Binding IsUpdateWordEnabled}"/>
-        </Grid>
+                <Grid Grid.Row="3" Height="30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.1*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                    </Grid.ColumnDefinitions>
 
-        <!--Next Random Setting-->
-        <CheckBox Grid.Row="4" Content="Randomly choose next word" IsChecked="{Binding Path=RandomSetting, Mode=TwoWay}"/>
+                    <Button Grid.Column="1" Content="Add" IsEnabled="{Binding IsChangeCategoryEnabled}" Command="{Binding AddCategoryCommand}"/>
+                    <Button Grid.Column="3" Content="Delete" IsEnabled="{Binding IsDeleteCategoryEnabled}" Command="{Binding DeleteCategoryCommand}"/>
+                    <Button Grid.Column="5" Content="Rename" IsEnabled="{Binding IsChangeCategoryEnabled}" Command="{Binding RenameCategoryCommand}"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
 
-        <!--Auto Start Setting-->
-        <CheckBox Grid.Row="6" Content="Run application on Windows startup" IsChecked="{Binding Path=AutoStartSetting, Mode=TwoWay}"/>
-
-        <!--Timer Setting-->
-        <Grid Grid.Row="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <GroupBox Grid.Row="2">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold" Text="Words"/>
+            </GroupBox.Header>
             
-            <CheckBox Grid.Column="0" x:Name="AutoChangeCheckBox"  Content="Automatically change a word every: " IsChecked="{Binding Path=AutoChangeSetting, Mode=TwoWay}"/>
-            <TextBox Grid.Column="2" MaxLength="3" TextAlignment="Right" IsEnabled="{Binding ElementName=AutoChangeCheckBox, Path=IsChecked}" Text="{Binding ChangeInMinutesSetting, Mode=OneWay}" PreviewTextInput="TextBoxOnPreviewTextInput" TextChanged="TextBoxBaseOnTextChanged"/>
-            <TextBlock Grid.Column="4" Text="minutes"/>
-        </Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+            
+                <!--Word Table-->
+                <DataGrid Grid.Row="1" 
+                          CellStyle="{StaticResource CellContentDataGrid}"
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False" 
+                          IsTabStop="True" 
+                          IsReadOnly="False"
+                          ItemsSource="{Binding TranslationItems}"  
+                          RowEditEnding="DataGridOnRowEditEnding"
+                          AutoGenerateColumns="False"
+                          RowHeight="26"
+                          SelectedItem="{Binding SelectedTranslationItem, Mode=TwoWay}"
+                          SelectionMode="Single">
+            
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Word" Width="0.25*" Binding="{Binding Word}" IsReadOnly="False"/>
+                        <DataGridTextColumn Header="Translation" Width="0.75*" Binding="{Binding Translation}" IsReadOnly="False"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!--Table Buttons-->
+                <Grid Grid.Row="3" Height="30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.1*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="1" Content="Add" Command="{Binding AddWordCommand}"/>
+                    <Button Grid.Column="3" Content="Delete" Command="{Binding DeleteWordCommand}" IsEnabled="{Binding IsDeleteWordEnabled}"/>
+                    <Button Grid.Column="5" Content="Choose" Command="{Binding ChooseWordCommand}" IsEnabled="{Binding IsUpdateWordEnabled}"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+        
+        <GroupBox Grid.Row="4">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold" Text="Other Settings"/>
+            </GroupBox.Header>
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+
+                <!--Next Random Setting-->
+                <CheckBox Grid.Row="1" Content="Randomly choose next word" IsChecked="{Binding Path=RandomSetting, Mode=TwoWay}"/>
+
+                <!--Auto Start Setting-->
+                <CheckBox Grid.Row="3" Content="Run application on Windows startup" IsChecked="{Binding Path=AutoStartSetting, Mode=TwoWay}"/>
+
+                <!--Timer Setting-->
+                <Grid Grid.Row="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+            
+                    <CheckBox Grid.Column="0" x:Name="AutoChangeCheckBox"  Content="Automatically change a word every: " IsChecked="{Binding Path=AutoChangeSetting, Mode=TwoWay}"/>
+                    <TextBox Grid.Column="2" MaxLength="3" TextAlignment="Right" IsEnabled="{Binding ElementName=AutoChangeCheckBox, Path=IsChecked}" Text="{Binding ChangeInMinutesSetting, Mode=OneWay}" PreviewTextInput="TextBoxOnPreviewTextInput" TextChanged="TextBoxBaseOnTextChanged"/>
+                    <TextBlock Grid.Column="4" Text="minutes"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
 
         <!--Changes Buttons Panel-->
-        <Grid Grid.Row="10" Height="30">
+        <Grid Grid.Row="6" Height="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.1*"/>
                 <ColumnDefinition Width="*"/>

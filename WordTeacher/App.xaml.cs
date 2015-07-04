@@ -2,6 +2,7 @@
 using System.Windows;
 using Microsoft.Win32;
 using WordTeacher.Properties;
+using WordTeacher.Utilities;
 
 namespace WordTeacher
 {
@@ -20,6 +21,8 @@ namespace WordTeacher
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            SettingFilesUtility.CheckSettingsFolder();
 
             UpdateAutoStart(Settings.Default.AutoStart);
             Settings.Default.PropertyChanged += (sender, args) =>

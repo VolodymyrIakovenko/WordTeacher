@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Timers;
@@ -32,6 +33,7 @@ namespace WordTeacher.ViewModels
         private bool _isSettingsOpened;
         private bool _isHidden;
         private int _translationItemIndex;
+        private Category _currentCategory;
         private SettingsViewModel _settingsViewModel;
 
         private ICommand _nextItemCommand;
@@ -43,8 +45,7 @@ namespace WordTeacher.ViewModels
         public MainViewModel()
         {
             // Load translation items from appdata files.
-            SettingsUtility.CheckSettingsFolder();
-            TranslationItems = new ObservableCollection<TranslationItem>(SettingsUtility.Load());
+            CurrentCategory = SettingFilesUtility.Load(SettingFilesUtility.GetCurrentFile());
 
             // Subscribe to settings changes.
             Settings.Default.SettingsSaving += DefaultSettingsOnSettingsSaving;
@@ -162,6 +163,16 @@ namespace WordTeacher.ViewModels
             get { return TranslationItems.Any() ? TranslationItems[_translationItemIndex] : new TranslationItem(string.Empty, string.Empty); }
         }
 
+        public Category CurrentCategory
+        {
+            get { return _currentCategory; }
+            set
+            {
+                _currentCategory = value;
+                TranslationItems = new ObservableCollection<TranslationItem>(CurrentCategory.TranslationItems.Clone());
+            }
+        }
+
         /// <summary>
         /// The list of words and their translations.
         /// </summary>
@@ -171,7 +182,7 @@ namespace WordTeacher.ViewModels
             set
             {
                 _translationItems = value;
-                OnPropertyChanged("TranslationItems");
+                OnPropertyChanged("Categories");
                 OnPropertyChanged("CurrentTranslationItem");
             }
         }
@@ -306,16 +317,16 @@ namespace WordTeacher.ViewModels
             _autoChangeTimer.Enabled = true;
         }
 
-        private void SettingsViewModelOnWordsSaved(object sender, List<TranslationItem> translationItems)
+        private void SettingsViewModelOnWordsSaved(object sender, Category newCategory)
         {
-            if (_translationItemIndex >= translationItems.Count)
+            if (!newCategory.Name.Equals(CurrentCategory.Name) || _translationItemIndex >= newCategory.TranslationItems.Count)
             {
                 _translationItemIndex = 0;
-                UpdateCurrentItem();
             }
 
             // Copy items from settings.
-            TranslationItems = new ObservableCollection<TranslationItem>(_settingsViewModel.SavedTranslationItems.Clone());
+            CurrentCategory = (Category)newCategory.Clone();
+            UpdateCurrentItem();
         }
 
         private void SettingsViewOnClosed(object sender, EventArgs eventArgs)

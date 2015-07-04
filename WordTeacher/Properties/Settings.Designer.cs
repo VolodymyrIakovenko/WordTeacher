@@ -82,5 +82,17 @@ namespace WordTeacher.Properties {
                 this["ChangeInMinutes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CurrentCategory {
+            get {
+                return ((string)(this["CurrentCategory"]));
+            }
+            set {
+                this["CurrentCategory"] = value;
+            }
+        }
     }
 }
