@@ -43,14 +43,14 @@
                     </DataTemplate>
                 </ContextMenu.ItemTemplate>
 
-                <MenuItem Header="Settings" Command="{Binding SettingsCommand}" 
-                              IsEnabled="{Binding IsSettingsOpened, Converter={StaticResource InverseBooleanConverter}}"/>
+                <MenuItem Header="Test" Command="{Binding TestCommand}" IsEnabled="{Binding IsTestOpened, Converter={StaticResource InverseBooleanConverter}}"/>
+                <MenuItem Header="Settings" Command="{Binding SettingsCommand}" IsEnabled="{Binding IsSettingsOpened, Converter={StaticResource InverseBooleanConverter}}"/>
                 <MenuItem Header="Exit" Command="{Binding CloseCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
 
         <Border Grid.Row="0" x:Name="TranslationItemBorder" BorderBrush="DarkSlateBlue" BorderThickness="1" CornerRadius="0,0,5,5" Background="AliceBlue">
-            <Grid Grid.Row="0">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.2*"/>

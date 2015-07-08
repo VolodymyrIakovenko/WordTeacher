@@ -7,7 +7,10 @@
     <Application.Resources>
         <viewModels:MainViewModel x:Key="MainViewModel" />
         <viewModels:SettingsViewModel x:Key="SettingsViewModel" />
-        
+        <viewModels:TestViewModel x:Key="TestViewModel" />
+        <viewModels:OptionsTestViewModel x:Key="OptionsTestViewModel" />
+        <viewModels:InputTestViewModel x:Key="InputTestViewModel" />
+
         <converters:ValueToCenterPositionConverter x:Key="CenterPositionConverter"/>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </Application.Resources>

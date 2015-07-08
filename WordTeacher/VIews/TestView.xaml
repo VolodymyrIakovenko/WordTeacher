@@ -1,0 +1,86 @@
+﻿<Window x:Class="WordTeacher.Views.TestView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Test" 
+        Height="400"
+        Width="500"
+        DataContext="{StaticResource TestViewModel}"
+        WindowStartupLocation="CenterScreen"
+        Loaded="TestViewOnLoaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.05*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.05*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.05*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.05*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <ListBox Grid.Column="0" ItemsSource="{Binding AvailableCategories}" SelectedItem="{Binding SelectedAvailable, Mode=OneWayToSource}"/>
+                
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="0.2*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="0.2*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="0.2*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Button Grid.Row="0" Content="&gt;" Command="{Binding MoveRightCommand}"/>
+                    <Button Grid.Row="2" Content="&gt;&gt;&gt;" Command="{Binding MoveAllRightCommand}"/>
+                    <Button Grid.Row="4" Content="&lt;" Command="{Binding MoveLeftCommand}"/>
+                    <Button Grid.Row="6" Content="&lt;&lt;&lt;" Command="{Binding MoveAllLeftCommand}"/>
+                    
+                </Grid>
+
+                <ListBox Grid.Column="4" ItemsSource="{Binding ChosenCategories}" SelectedItem="{Binding SelectedChosen, Mode=OneWayToSource}"/>
+            </Grid>
+            
+            <Grid Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <RadioButton Grid.Row="0" Grid.Column="0" Content="Options" IsChecked="{Binding IsOptionsSelected, Mode=TwoWay}" GroupName="AnswerType"/>
+                    <RadioButton Grid.Row="2" Grid.Column="0" Content="Keyboard Input" IsChecked="{Binding IsInputSelected, Mode=TwoWay}" GroupName="AnswerType"/>
+
+                    <RadioButton Grid.Row="0" Grid.Column="1" Content="Word" IsChecked="{Binding IsWordSelected, Mode=TwoWay}" GroupName="QuestionType"/>
+                    <RadioButton Grid.Row="2" Grid.Column="1" Content="Translation" IsChecked="{Binding IsTranslationSelected, Mode=TwoWay}" GroupName="QuestionType"/>
+                </Grid>
+            </Grid>
+            
+            <Button Grid.Row="4" Content="Start" HorizontalAlignment="Center" Width="100" IsEnabled="{Binding IsStartEnabled}" Command="{Binding StartCommand}"/>
+        </Grid>
+    </Grid>
+</Window>

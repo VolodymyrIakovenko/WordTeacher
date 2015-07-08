@@ -1,0 +1,55 @@
+﻿<Window x:Class="WordTeacher.Views.OptionsTestView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Test" 
+        Height="300"
+        Width="400"
+        DataContext="{StaticResource OptionsTestViewModel}"
+        WindowStartupLocation="CenterScreen"
+        Loaded="OptionsTestViewOnLoaded">
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.05*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.05*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.05*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.05*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Text="{Binding Question}"/>
+                
+                <ItemsControl Grid.Row="2" ItemsSource="{Binding Options}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton IsChecked="{Binding IsChecked}"  Margin="0,0,0,10" GroupName="Options">
+                                <TextBlock Text="{Binding Name}" Background="{Binding Color}"/>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="1" Content="{Binding EndButtonName}" Command="{Binding NextCommand}" IsEnabled="{Binding IsNextEnabled}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

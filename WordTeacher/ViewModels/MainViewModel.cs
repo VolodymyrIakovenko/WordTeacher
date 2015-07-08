@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Timers;
@@ -30,17 +28,20 @@ namespace WordTeacher.ViewModels
         private double _width;
         private double _dragginPosX;
         private double _dragginPosY;
+        private bool _isTestOpened;
         private bool _isSettingsOpened;
         private bool _isHidden;
         private int _translationItemIndex;
         private Category _currentCategory;
+
         private SettingsViewModel _settingsViewModel;
+        private TestViewModel _testViewModel;
+        private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>(); 
 
         private ICommand _nextItemCommand;
-        private ICommand _closeCommand;
+        private ICommand _testCommand;
         private ICommand _settingsCommand;
-
-        private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>(); 
+        private ICommand _closeCommand;
 
         public MainViewModel()
         {
@@ -121,7 +122,20 @@ namespace WordTeacher.ViewModels
         }
 
         /// <summary>
-        /// Position of the window on the Y axis.
+        /// Detects if test window is opened.
+        /// </summary>
+        public bool IsTestOpened
+        {
+            get { return _isTestOpened; }
+            set
+            {
+                _isTestOpened = value;
+                OnPropertyChanged("IsTestOpened");
+            }
+        }
+
+        /// <summary>
+        /// Detects if settings window is opened.
         /// </summary>
         public bool IsSettingsOpened
         {
@@ -190,6 +204,11 @@ namespace WordTeacher.ViewModels
         public ICommand NextItemCommand
         {
             get { return _nextItemCommand ?? (_nextItemCommand = new CommandHandler(NextItem, true)); }
+        }
+
+        public ICommand TestCommand
+        {
+            get { return _testCommand ?? (_testCommand = new CommandHandler(OpenTest, true)); }
         }
 
         public ICommand SettingsCommand
@@ -280,6 +299,23 @@ namespace WordTeacher.ViewModels
             }
 
             _autoChangeTimer.Enabled = Settings.Default.AutoChange;
+        }
+
+        private void OpenTest()
+        {
+            var testView = new TestView();
+
+            _testViewModel = (TestViewModel)testView.DataContext;
+
+            testView.Show();
+            testView.Closed += TestViewOnClosed;
+
+            IsTestOpened = true;
+        }
+
+        private void TestViewOnClosed(object sender, EventArgs eventArgs)
+        {
+            IsTestOpened = false;
         }
 
         private void OpenSettings()

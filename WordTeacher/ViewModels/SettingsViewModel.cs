@@ -27,6 +27,11 @@ namespace WordTeacher.ViewModels
         private TranslationItem _shownTranslationItem;
         private Category _currentCategory;
 
+        private ObservableCollection<string> _categoryNames = new ObservableCollection<string>(); 
+        private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>();
+        private List<Category> _categories = new List<Category>();
+        private List<Category> _savedCategories = new List<Category>();
+
         private ICommand _addCategoryCommand;
         private ICommand _deleteCategoryCommand;
         private ICommand _renameCategoryCommand;
@@ -35,11 +40,6 @@ namespace WordTeacher.ViewModels
         private ICommand _chooseWordCommand;
         private ICommand _saveCommand;
         private ICommand _exitCommand;
-
-        private ObservableCollection<string> _categoryNames = new ObservableCollection<string>(); 
-        private ObservableCollection<TranslationItem> _translationItems = new ObservableCollection<TranslationItem>();
-        private List<Category> _categories = new List<Category>();
-        private List<Category> _savedCategories = new List<Category>();
 
         public SettingsViewModel()
         {

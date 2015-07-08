@@ -60,16 +60,36 @@
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\HiddenTopConverter.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Extensions\SyncContextExtensions.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Option.cs" />
+    <Compile Include="Models\InputTest.cs" />
+    <Compile Include="Models\OptionsTest.cs" />
     <Compile Include="Models\TranslationItem.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Models\NativeMethods.cs" />
     <Compile Include="Utilities\SettingFilesUtility.cs" />
     <Compile Include="ViewModels\ICloseable.cs" />
+    <Compile Include="ViewModels\InputTestViewModel.cs" />
+    <Compile Include="ViewModels\OptionsTestViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\TestViewModel.cs" />
+    <Compile Include="Views\InputTestView.xaml.cs">
+      <DependentUpon>InputTestView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OptionsTestView.xaml.cs">
+      <DependentUpon>OptionsTestView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TestView.xaml.cs">
+      <DependentUpon>TestView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\InputTestView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -87,7 +107,15 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\OptionsTestView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
