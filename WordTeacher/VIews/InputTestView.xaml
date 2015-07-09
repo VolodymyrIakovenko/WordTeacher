@@ -48,7 +48,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="1" Content="{Binding EndButtonName}" Command="{Binding NextCommand}"/>
+                    <Button Grid.Column="1" Content="{Binding EndButtonName}" Command="{Binding NextCommand}" IsEnabled="{Binding IsNextEnabled}"/>
                 </Grid>
             </Grid>
         </Grid>

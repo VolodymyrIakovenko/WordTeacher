@@ -20,6 +20,7 @@ namespace WordTeacher.ViewModels
         private string _correctAnswer;
         private string _answerInput;
         private Brush _answerColor;
+        private bool _isNextEnabled;
         private List<InputTest> _tests = new List<InputTest>();
 
         private ICommand _nextCommand;
@@ -76,6 +77,16 @@ namespace WordTeacher.ViewModels
             }
         }
 
+        public bool IsNextEnabled
+        {
+            get { return _isNextEnabled; }
+            set
+            {
+                _isNextEnabled = value;
+                OnPropertyChanged("IsNextEnabled");
+            }
+        }
+
         public ICommand NextCommand
         {
             get { return _nextCommand ?? (_nextCommand = new CommandHandler(Next, true)); }
@@ -88,7 +99,9 @@ namespace WordTeacher.ViewModels
         {
             _currentTestIndex = 0;
             _rightAnswers = 0;
+            ClearTestView();
             UpdateAllProperties();
+            IsNextEnabled = true;
         }
 
         protected void OnPropertyChanged(string name)
@@ -122,17 +135,23 @@ namespace WordTeacher.ViewModels
             }
             else
             {
+                IsNextEnabled = false;
                 _currentTestIndex++;
                 SynchronizationContext.Current.Post(TimeSpan.FromSeconds(HighlightingDelayInSec), () =>
                     {
-                        CorrectAnswer = string.Empty;
-                        AnswerInput = string.Empty;
-                        AnswerColor = Brushes.Transparent;
-
+                        ClearTestView();
                         UpdateAllProperties();
+                        IsNextEnabled = true;
                     }
                 );
             }
+        }
+
+        private void ClearTestView()
+        {
+            CorrectAnswer = string.Empty;
+            AnswerInput = string.Empty;
+            AnswerColor = Brushes.Transparent;
         }
 
         private bool IsRightAnswer()

@@ -215,6 +215,7 @@ namespace WordTeacher.ViewModels
 
                 var optionsTestView = new OptionsTestView();
                 var optionsTestViewModel = (OptionsTestViewModel)optionsTestView.DataContext;
+                optionTests.Shuffle();
                 optionsTestViewModel.Tests = optionTests;
                 optionsTestView.ShowDialog();
             }
@@ -250,6 +251,7 @@ namespace WordTeacher.ViewModels
 
                 var inputTestView = new InputTestView();
                 var inputTestViewModel = (InputTestViewModel)inputTestView.DataContext;
+                inputTests.Shuffle();
                 inputTestViewModel.Tests = inputTests;
                 inputTestView.ShowDialog();
             }
