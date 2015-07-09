@@ -47,6 +47,11 @@ namespace WordTeacher.ViewModels
         {
             // Load translation items from appdata files.
             CurrentCategory = SettingFilesUtility.Load(SettingFilesUtility.GetCurrentFile());
+            var currentItemIndex = TranslationItems.IndexOf(TranslationItems.FirstOrDefault(t => t.Word.Equals(Settings.Default.CurrentWord)));
+            if (currentItemIndex >= 0)
+            {
+                _translationItemIndex = currentItemIndex;
+            }
 
             // Subscribe to settings changes.
             Settings.Default.SettingsSaving += DefaultSettingsOnSettingsSaving;
@@ -277,6 +282,8 @@ namespace WordTeacher.ViewModels
         private void UpdateCurrentItem()
         {
             OnPropertyChanged("CurrentTranslationItem");
+            Settings.Default.CurrentWord = CurrentTranslationItem.Word;
+            Settings.Default.Save();
             if (_settingsViewModel != null)
                 _settingsViewModel.ShownTranslationItem = CurrentTranslationItem;
         }

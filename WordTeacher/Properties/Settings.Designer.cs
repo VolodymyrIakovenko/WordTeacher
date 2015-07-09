@@ -94,5 +94,17 @@ namespace WordTeacher.Properties {
                 this["CurrentCategory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CurrentWord {
+            get {
+                return ((string)(this["CurrentWord"]));
+            }
+            set {
+                this["CurrentWord"] = value;
+            }
+        }
     }
 }
